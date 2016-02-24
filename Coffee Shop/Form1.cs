@@ -19,8 +19,8 @@ namespace Coffee_Shop
 
         private void button1_Click(object sender, EventArgs e)
         {
-                AddProduct addProduct = new AddProduct();
-                addProduct.Show();
+            AddProduct addProduct = new AddProduct();
+            addProduct.Show();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -33,6 +33,12 @@ namespace Coffee_Shop
         {
             CoffeeShopPOS coffeeShopPOS = new CoffeeShopPOS();
             coffeeShopPOS.Show();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            DisplaySales displaySales = new DisplaySales();
+            displaySales.Show();
         }
     }
 }

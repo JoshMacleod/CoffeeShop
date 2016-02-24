@@ -26,8 +26,8 @@
           <Key>
             <PropertyRef Name="TransactionID" />
           </Key>
-          <Property Name="TransactionID" Type="int" Nullable="false" />
-          <Property Name="TransactionDate" Type="datetime" />
+          <Property Name="TransactionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TransactionDate" Type="datetime2" Precision="7" />
         </EntityType>
         <EntityType Name="tblTransactionItem">
           <Key>
@@ -137,8 +137,8 @@
           <Key>
             <PropertyRef Name="TransactionID" />
           </Key>
-          <Property Name="TransactionID" Type="Int32" Nullable="false" />
-          <Property Name="TransactionDate" Type="DateTime" Precision="3" />
+          <Property Name="TransactionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TransactionDate" Type="DateTime" Precision="7" />
           <NavigationProperty Name="tblTransactionItems" Relationship="CoffeeShopDatabaseModel.FK_tblTransactionItem_ToTable_1" FromRole="tblTransaction" ToRole="tblTransactionItem" />
         </EntityType>
         <EntityType Name="tblTransactionItem">
@@ -187,7 +187,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>

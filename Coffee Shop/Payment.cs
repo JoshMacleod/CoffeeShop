@@ -12,6 +12,10 @@ namespace Coffee_Shop
 {
     public partial class Payment : Form
     {
+        public delegate void PaymentMadeEvent(object sender, PaymentMadeEventArgs e);
+
+        public event PaymentMadeEvent PaymentMade;
+
         private decimal paymentAmount;
 
         public decimal PaymentAmount
@@ -29,9 +33,6 @@ namespace Coffee_Shop
             InitializeComponent();
         }
 
-        public delegate void PaymentMadeEvent(object sender, PaymentMadeEventArgs e);
-
-        public event PaymentMadeEvent PaymentMade;
 
         private void PaymentHasBeenMade(object sender, EventArgs e)
         {
@@ -41,7 +42,7 @@ namespace Coffee_Shop
             {
                 total = decimal.Parse(txtAmountToPay.Text.TrimStart('£')) - decimal.Parse(txtPaymentAmount.Text);
             }
-            catch (Exception)
+            catch
             {
                 MessageBox.Show("An error has occurred, please enter a valid amount");
                 return;
@@ -51,10 +52,19 @@ namespace Coffee_Shop
             {
                 txtAmountToPay.Text = total.ToString();
             }
+            else if (total == 0)
+            {
+                PaymentMade(this, new PaymentMadeEventArgs()
+                {
+                    PaymentSuccess = true
+                });
+                this.Close();
+            }
             else
             {
                 MessageBox.Show("Change: " + String.Format("{0:c}", -total));
                 PaymentMade(this, new PaymentMadeEventArgs() { PaymentSuccess = true });
+                this.Close();
             }
         }
     }

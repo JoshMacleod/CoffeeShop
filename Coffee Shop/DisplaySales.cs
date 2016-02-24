@@ -15,6 +15,7 @@ namespace Coffee_Shop
         public DisplaySales()
         {
             InitializeComponent();
+            generateGraph();
         }
 
         private void generateGraph()

@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Core.Objects;
 using System.Drawing.Printing;
+using System.IO;
 
 namespace Coffee_Shop
 {
@@ -42,16 +43,10 @@ namespace Coffee_Shop
             AddProductsToTabbedPanel();
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            tblProduct p = new tblProduct() { Description = "Product A", Price = 1.99M };
-            products.Add(p);
-        }
-
         private void FormatListItem(object sender, ListControlConvertEventArgs e)
         {
             string currentDescription = ((tblProduct)e.ListItem).Description;
-            string currentPrice = String.Format("{0:c}",((tblProduct)e.ListItem).Price);
+            string currentPrice = String.Format("{0:c}", ((tblProduct)e.ListItem).Price);
             string currentDescriptionPadded = currentDescription.PadRight(30);
 
             e.Value = currentDescriptionPadded + currentPrice;
@@ -86,6 +81,7 @@ namespace Coffee_Shop
                     b.Size = new Size(100, 100);
                     b.Text = tProd.Description;
                     b.Tag = tProd;
+                    b.Image = byteArrayToImage(tProd.Image);
                     b.Click += UpdateProductList;
                     flp.Controls.Add(b);
                 }
@@ -93,6 +89,19 @@ namespace Coffee_Shop
                 tp.Controls.Add(flp);
                 i++;
             }
+        }
+
+        private Image byteArrayToImage(byte[] byteArray)
+        {
+            MemoryStream ms = new MemoryStream(byteArray);
+            Image result = new Bitmap (100, 100);
+
+            using (Graphics g = Graphics.FromImage(result))
+            {
+                g.DrawImage(Image.FromStream(ms), 0, 0, 100, 100);
+            }
+
+            return result;
         }
 
         private void UpdateProductList(object sender, EventArgs e)
@@ -124,33 +133,33 @@ namespace Coffee_Shop
             tblProduct selectedProduct = (tblProduct)lstProductsChosen.SelectedItem;
             products.Remove(selectedProduct);
             TransactionTotal = TransactionTotal - (decimal)selectedProduct.Price;
+            txtInfoPanel.Text = "Next item";
         }
 
         private void OpenPayment(object sender, EventArgs e)
         {
             Payment payment = new Payment();
             payment.PaymentAmount = TransactionTotal;
-            payment.ShowDialog();
             payment.PaymentMade += paymentSuccess;
+            payment.ShowDialog();
+            PrintReceipt();
         }
 
         private void paymentSuccess(object sender, PaymentMadeEventArgs e)
         {
-            //tblTransaction transaction = new tblTransaction();
-            //transaction.TransactionDate = DateTime.Now;
+            tblTransaction transaction = new tblTransaction();
+            transaction.TransactionDate = DateTime.Now;
 
-            //if (e.PaymentSuccess == true)
-            //{
-            //    foreach (tblProduct product in products)
-            //    {
-            //        transaction.tblTransactionItems.Add(new tblTransactionItem() { ProductID = product.ProductID });
-            //    }
+            if (e.PaymentSuccess == true)
+            {
+                foreach (tblProduct product in products)
+                {
+                    transaction.tblTransactionItems.Add(new tblTransactionItem() { ProductID = product.ProductID });
+                }
 
-            //    cse.tblTransactions.Add(transaction);
-            //    cse.SaveChanges();
-
-            MessageBox.Show(e.PaymentSuccess.ToString());
-            //}
+                cse.tblTransactions.Add(transaction);
+                cse.SaveChanges();
+            }
         }
 
         private void PrintReceipt()
@@ -169,6 +178,10 @@ namespace Coffee_Shop
             {
                 printDocument.Print();
             }
+
+            CoffeeShopPOS coffeeShopPOS = new CoffeeShopPOS();
+            Form1.ActiveForm.Close();
+            coffeeShopPOS.Show();
         }
 
         private void PrintDocument_PrintPage(object sender, PrintPageEventArgs e)

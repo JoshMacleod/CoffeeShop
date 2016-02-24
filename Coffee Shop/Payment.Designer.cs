@@ -69,6 +69,7 @@
             // 
             // btnPaymentMade
             // 
+            this.btnPaymentMade.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnPaymentMade.Location = new System.Drawing.Point(101, 118);
             this.btnPaymentMade.Name = "btnPaymentMade";
             this.btnPaymentMade.Size = new System.Drawing.Size(112, 45);
@@ -79,6 +80,7 @@
             // 
             // Payment
             // 
+            this.AcceptButton = this.btnPaymentMade;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(321, 189);
